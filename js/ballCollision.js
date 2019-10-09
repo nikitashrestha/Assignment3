@@ -1,9 +1,9 @@
 
 var DIRECTION = [-5,-4,-3,3,4,5];
 var MAXSPEED = 3;
-var MAXWIDTH = 500 - 49;
-var MAXHEIGHT = 500 - 49;
-var WIDTHS = [50,60,70];
+var MAXWIDTH = 1200 - 50;
+var MAXHEIGHT = 800 - 50;
+var WIDTHS = [40,60,80];
 var MASS = [30,40,50];
 var BOXCOLOR = ['green','orange','pink'];
 
@@ -21,8 +21,8 @@ class Box {
         this.y = null;
         this.diameter = null;
         this.backgroundColor = null;
-        this.dx = 1;
-        this.dy = 1;
+        this.dx = 0;
+        this.dy = 0;
         this.MASS = null;
     }
 
@@ -48,11 +48,6 @@ class Box {
         this.backgroundColor = color;
     }
 
-    setDirection(a,b){
-        this.dx = a;
-        this.dy = b;
-    }
-
     reverseXDirection(){
         this.dx*=-1;
     }
@@ -75,7 +70,7 @@ class Box {
     }
 
     checkWallCollisionX(){
-        if((this.x + (2.3 * this.diameter)) >= 500 || (this.x <= 0)){
+        if((this.x + (2.3 * this.diameter)) >= MAXWIDTH || (this.x <= 0)){
             return true;
         }
         else{
@@ -84,7 +79,7 @@ class Box {
     }
 
     checkWallCollisionY(){
-        if(((this.y + (2.3 * this.diameter)) >= 500) || ((this.y - this.diameter) <= 0)){
+        if(((this.y + (2.3 *this.diameter)) >= MAXHEIGHT) || ((this.y - this.diameter) <= 0)){
             return true;
         }
         else{
@@ -114,11 +109,11 @@ class Box {
 }
 
 class Game{
-    constructor(MAXWIDTH,MAXHEIGHT,boxCount,parentElementID,BOXCOLOR){
-        this.MAXHEIGHT = MAXHEIGHT;
-        this.MAXWIDTH = MAXWIDTH;
+    constructor(boxCount,parentElementID,BOXCOLOR,FPS){
+        this.MAXHEIGHT = 500;
+        this.MAXWIDTH = 500;
         this.boxCount = boxCount;
-        this.ANIMATIONFRAME = 200;
+        this.ANIMATIONFRAME = FPS;
         this.BOXCOLOR = BOXCOLOR;
         this.parentElement = document.getElementById(parentElementID);
         this.boxes = [];
@@ -128,7 +123,8 @@ class Game{
     createBoxes(){
         for(var i = 0;i<this.boxCount;i++){
             var box= new Box(this.parentElement);
-            var boxSize = getRandomNumber(20,50);
+            var boxSize = getRandomNumber(30,51);
+            
             var x = getRandomNumber(0,this.MAXWIDTH - boxSize);
             var y = getRandomNumber(0, this.MAXHEIGHT - boxSize);
             
@@ -186,18 +182,20 @@ class Game{
             for(var i = 0;i<that.boxCount;i++){
                 if(that.boxes[i].checkWallCollisionX()){
                     that.boxes[i].reverseXDirection();
+                    // that.boxes[i].reverseYDirection();
                 }
                 if(that.boxes[i].checkWallCollisionY()){
                     that.boxes[i].reverseYDirection();
                 }
+                if(that.boxes[i].x)
                 that.boxes[i].move();
             }
             that.detectAllCollision();
-        },200)
+        },1000/this.ANIMATIONFRAME)
     }
 }
 
-game = new Game(500,500,5,'box1',BOXCOLOR);
+game = new Game(50,'box1',BOXCOLOR,50);
 game.moveBoxes();
 
 
